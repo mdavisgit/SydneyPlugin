@@ -1,0 +1,29 @@
+#name, main, version and api are required
+name: SydneyPlugin
+main: SydneyPlugin\Main
+version: 0.0.1
+api: [1.0.0]
+
+load: POSTWORLD
+author: Daviskingdom
+description: Sydney's Plugin
+website: https://github.com/mdavisgit/SydneyPlugin.git
+commands:
+ hi:
+  description: Hi command
+  usage: "Usage: /hi"
+  permission: exampleplugin.command.hi
+ tst:
+  description: Test command
+  usage: "Usage: /tst"
+  permission: exampleplugin.command.tst
+ soo:
+  description: Say hi to Sydney command
+  usage: "Usage: /soo"  
+permissions:
+ exampleplugin.command.hi:
+  description: "Allows the user to run the hi command"
+  default: true
+ exampleplugin.command.tst:
+  description: "Allows the user to run the tst command"
+  default: true
