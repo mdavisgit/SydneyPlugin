@@ -1,5 +1,5 @@
 <?php
- 
+
 namespace SydneyPlugin;
  
 use pocketmine\command\Command;
@@ -12,37 +12,78 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\item\Stone;
- 
+use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\nbt\tag\String;
+//use SydneyPlugin\Messages;
+
+
+$playersOnline = array();
+//$playerOnline is a global variable
+
 class Main extends PluginBase implements Listener{
+
+/**
+	public function sendMessageAll(Messages $m) {
+			
+		}
+		
+ */
  
         public function onLoad(){
-                $this->getLogger()->info("onLoad() has been called!");
+                $this->getLogger()->info("onLoad() has been called!");              
         }
  
         public function onEnable(){
-				$this->getLogger()->info("onEnable() has been called!");
-				$this->getServer()->getScheduler()->scheduleRepeatingTask(new BroadcastPluginTask($this), 1200);
+				$this->getLogger()->info("onEnable() has been called!!!");
+				$this->getServer()->getScheduler()->scheduleRepeatingTask(new BroadcastPluginTask($this), 120);
 				// This line above will schedule a repeating task to run every minute (1200 ticks)
 				$this->getServer()->getPluginManager()->registerEvents($this,$this);    
 				//This line above is required to use additional events
 				// Also must include "use pocketmine\event\player\<EventNameToUse>"
 				//  You can get supported event names here: http://docs.pocketmine.net/d3/daf/namespacepocketmine_1_1event.html
-				//   expand the events on the left column to see the choices.  Ex. "use pocketmine\event\player\PlayerJoinEvent" 
-        }
+				//   expand the events on the left column to see the choices.  Ex. "use pocketmine\event\player\PlayerJoinEvent"
+				
+		}
  
 		public function onDisable() {
 				$this->getLogger()->info("onDisable() has been called!");
 		}
 		
-		public function testmessage($m) {
+		/**
+		 * _________________________________________________________________ 
+		 * 
+		 * @param String $m
+		 */
+		public function messageToAll($m) {
+			
 			Server::getInstance()->broadcastMessage($m);
 		}
 		
 		public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
+			global $playersOnline;
 			switch ($command->getName ()) {
 				case "hi" :
-					$sender->sendMessage ( "Hello " . $sender->getName () . "!".time());
-					$this->testmessage("Boo Ya");
+					$sender->sendMessage ( "Hello " . $sender->getName () . "!!!".time());
+					$this->messageToAll("Boo Ya");
+					$e = "Lola140";
+//					$e->getPlayer()->sendMessage("poop head");
+					
+					$this->messageToAll("Before foreach");
+					$length = count($playersOnline);
+					$this->messageToAll("Length: " . $length);
+					
+					for ($i = 0; $i < $length; $i++) {
+						$this->messageToAll("i: " . $i);
+						$this->messageToAll("Index: " . $i . " is " . $playersOnline[$i]);
+					}
+//					foreach($playersOnline as $x => $x_value) {
+	//					$this->testmessage($x. " " . $x_value);
+						//				echo "Key=" . $x . ", Value=" . $x_value;
+						//				echo "<br>";
+		//				$this->testmessage("123");
+		//			}
+					$this->messageToAll("Afer foreach");
+					
 					return true;
 				case "tst" :
 					$sender->sendMessage ( "Test works" );
@@ -59,12 +100,43 @@ class Main extends PluginBase implements Listener{
 
 		public function playerJoin(PlayerJoinEvent $PJE) {
 			// Format for function is "public function <anyName>(<EventNameFromDocumentation> <anyVariableName>) {
-			$this->testmessage("onJoin");
+//			$playersOnline = array();
+			global $playersOnline;
+			$this->messageToAll("onJoin!");
 			$player = $PJE->getPlayer();
 			$name = $player->getDisplayName();
-			$this->getServer()->broadcastMessage("Howdy ".$name." [DEFAULT] joined the game!".time());
+			$this->getServer()->broadcastMessage("Howdy ".$name." [DEFAULT] joined the game!!".time());
+			
+			$this->messageToAll("Before setting array");
+			
+//			$playersOnline = array($name=>time());
 
+			if(empty($playersOnline)) {
+				$playersOnline[0] = $name . "~" . time();
+				$this->messageToAll("Added entry to first element: " . $playersOnline[0]);
+			}
+				else {
+					$length = count($playersOnline);
+					$this->messageToAll("Length: " . $length);
+					$this->messageToAll("Count : " . count($playersOnline));
+					$this->messageToAll("Name: " . $name);
 
+//					$playersOnline[$length] = $name;
+					$playersOnline[$length] = $name . "~" . time();
+
+				}
+					
+				$data[$name]->sendChat("Please do not ask for OP");
+			
+
+//			array_push($playersOnline, $name=>time());
+			
+			
+
+			
+		}
+		
+		public function playerQuit(PlayerQuitEvent $PQE) {
 			
 		}
 		
@@ -78,4 +150,10 @@ class Main extends PluginBase implements Listener{
 public function onSpawn(PlayerRespawnEvent $event) {
 	Server::getInstance ()->broadcastMessage ( $event->getPlayer ()->getDisplayName () . " has just spawned!" );
 }
+
+
+
+
+
+
 }
