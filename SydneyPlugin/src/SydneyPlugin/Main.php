@@ -16,8 +16,10 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\nbt\tag\String;
 // use SydneyPlugin\Messages;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerKickEvent;
 
 $playersOnline = array ();
+
 // $playerOnline is a global variable
 class Main extends PluginBase implements Listener {
 	
@@ -49,7 +51,11 @@ class Main extends PluginBase implements Listener {
 	 * @param String $m        	
 	 */
 	public function messageToAll($m) {
-		Server::getInstance ()->broadcastMessage ( $m );
+		Server::getInstance ()->broadcastMessage ( $m );		
+	}
+	
+	public function onKick(PlayerKickEvent $PKE) {
+		$this->messageToAll("someone was kicked");
 	}
 	public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
 		global $playersOnline;
@@ -61,13 +67,26 @@ class Main extends PluginBase implements Listener {
 				// $e->getPlayer()->sendMessage("poop head");
 				
 				$this->messageToAll ( "Before foreach" );
-				$length = sizeof( $playersOnline );
+				$length = sizeof ( $playersOnline );
 				$this->messageToAll ( "Length: " . $length );
 				
-				foreach ($playersOnline as &$i) {
-//				for($i = 0; $i < $length; $i ++) {
-					$this->messageToAll ( "Element Value: " . $i );
-//					$this->messageToAll ( "Index: " . $i . " is " . $playersOnline [$i] );
+				for($i = 0; $i < $length; $i ++) {
+					$this->messageToAll ( print_r ( $playersOnline ) );
+					// $this->messageToAll(var_dump($playersOnline));
+					// $this->messageToAll ( "Element " . $i . "0: " . $playersOnline [$i] [0] . " Element " . $i . "1: " . $playersOnline [$i] [1] );
+				}
+				
+				if ($length > 0) {
+					// foreach ( $playersOnline as $aName => $aTime ) {
+					// while ( list ( $key, $value ) = each ( $aTime ) ) {
+					// $this->messageToAll ( "key " . $key . " value " . $value );
+					// }
+					
+					// for($i = 0; $i < $length; $i ++) {
+					// $this->messageToAll ( "aName: " . $aName . "aTime: " . $aTime );
+					// $this->messageToAll ( "Index: " . $i . " is " . $playersOnline [$i] );
+					// $this->messageToAll( "Element ". $length . "0: " . $playersOnline[$length][0] . " Element ". $length . "1: " . $playersOnline[$length][1]);
+					// }
 				}
 				// foreach($playersOnline as $x => $x_value) {
 				// $this->testmessage($x. " " . $x_value);
@@ -100,34 +119,75 @@ class Main extends PluginBase implements Listener {
 		
 		$this->messageToAll ( "Before setting array" );
 		
+		/**
+		 * if (empty ( $playersOnline )) {
+		 * $playersOnline [0] = $name .
+		 *
+		 *
+		 *
+		 *
+		 *
+		 *
+		 * "~" . time ();
+		 * $this->messageToAll ( "Added entry to first element: " . $playersOnline [0] );
+		 * } else {
+		 * $length = count ( $playersOnline );
+		 * $this->messageToAll ( "Length: " . $length );
+		 * $this->messageToAll ( "Count : " . count ( $playersOnline ) );
+		 * $this->messageToAll ( "Name: " . $name );
+		 *
+		 * $playersOnline [$length] = $name . "~" . time ();
+		 * }
+		 */
 		
-/**		if (empty ( $playersOnline )) {
-			$playersOnline [0] = $name . "~" . time ();
-			$this->messageToAll ( "Added entry to first element: " . $playersOnline [0] );
-		} else {
-			$length = count ( $playersOnline );
-			$this->messageToAll ( "Length: " . $length );
-			$this->messageToAll ( "Count : " . count ( $playersOnline ) );
-			$this->messageToAll ( "Name: " . $name );
-			
-			$playersOnline [$length] = $name . "~" . time ();
-		}
-*/
-				
-		$length = sizeof( $playersOnline );
-		$this->messageToAll ( "Length before: " . $length);
-		$playersOnline [$length] = $name . "~" . time ();
-		$this->messageToAll ( "Length after: " . $length);
-		
-
+		$length = sizeof ( $playersOnline );
+		$this->messageToAll ( "Length: " . $length );
+		// $this->messageToAll ( "Length before: " . $length);
+		// $playersOnline [$length] = $name . "~" . time ();
+		// $playersOnline = array (
+		// $length => array (
+		// $name,
+		// time ()
+		// )
+		// );
+		$playersOnline [$name] = time ();
+		$this->messageToAll ( print_r ( $playersOnline ) );
+		$playersOnline [$name] = time ();
+		$this->messageToAll ( print_r ( $playersOnline ) );
+		// $this->messageToAll("Player " . $name . " joined " . $playersOnline[$name]);
+		$nameDup = $name . "xx";
+		$playersOnline [$nameDup] = time ();
+		$this->messageToAll ( print_r ( $playersOnline ) );
+		// $this->messageToAll("Player " . $nameDup . " joined " . $playersOnline[$name]);
+		// $this->messageToAll ( "Element " . $length . "0: " . $playersOnline [$length] [0] . " Element " . $length . "1: " . $playersOnline [$length] [1] );
+		// Duplicate the new entry - for testing only
+	/**
+	 * $length = sizeof ( $playersOnline );
+	 * $this->messageToAll("Length: " .
+	 *
+	 *
+	 * $length);
+	 * $nameDup = $name."x";
+	 * $playersOnline = array (
+	 * $length => array (
+	 * $nameDup,
+	 * time ()
+	 * )
+	 * );
+	 * $this->messageToAll ( "Element " . $length . "0: " . $playersOnline [$length] [0] . " Element " . $length . "1: " . $playersOnline [$length] [1] );
+	 *
+	 * $this->messageToAll ( "Element 00: " . $playersOnline [0] [0] . " Element 01: " . $playersOnline [0] [1] );
+	 * $this->messageToAll ( "Element 10: " . $playersOnline [1] [0] . " Element 11: " . $playersOnline [1] [1] );
+	 */
 	}
-	public function playerQuit(PlayerQuitEvent $PQE) {
+	public function onQuit(PlayerQuitEvent $PQE) {
 		global $playersOnline;
+		$this->messageToAll ( "bye bye" );
 		$player = $PQE->getPlayer ();
 		$name = $player->getDisplayName ();
-		foreach (array_keys($playersOnline, $name) as $key) {
-			unset($playersOnline[$key]);
-		}
+		$this->messageToAll ( print_r ( $playersOnline ) );
+		unset ( $playersOnline [$name] );
+		$this->messageToAll ( print_r ( $playersOnline ) );
 	}
 	
 	/**
@@ -144,7 +204,7 @@ class Main extends PluginBase implements Listener {
 		$length = count ( $playersOnline );
 		$p = $PIE->getPlayer ();
 		$name = $p->getDisplayName ();
-		$this->messageToAll ($p . " - " . $name);
+		$this->messageToAll ( $p . " - " . $name );
 		for($i = 0; $i < $length; $i ++) {
 			$wValue = $playersOnline [$i];
 			if (($x_pos = strpos ( $wValue, '~' )) !== FALSE) {
@@ -153,17 +213,17 @@ class Main extends PluginBase implements Listener {
 				$wOnlineTime = time () - $wPlayerJoinTime;
 			}
 			$msgSent = 0;
-			if (($wOnlineTime >= 12) AND ($wOnlineTime <= 600) AND $name == $wPlayerName) {
+			if (($wOnlineTime >= 12) and ($wOnlineTime <= 600) and $name == $wPlayerName) {
 				
 				$p->sendMessage ( "You have been playing for " . $wOnlineTime . " seconds." );
 				$p->sendMessage ( "Take a break and eat a cookie" );
 				$msgSent = 1;
-			} elseif (($wOnlineTime >= 601) AND ($wOnlineTime <= 1000) AND $name == $wPlayerName) {
+			} elseif (($wOnlineTime >= 601) and ($wOnlineTime <= 1000) and $name == $wPlayerName) {
 				
 				$p->sendMessage ( "You have been playing for " . $wOnlineTime . " seconds." );
 				$p->sendMessage ( "Take a break and eat a cookie" );
 				$p->sendMessage ( "You will be kicked from the server if you do not" );
-			} elseif (($wOnlineTime > 1001) AND $name == $wPlayerName) {
+			} elseif (($wOnlineTime > 1001) and $name == $wPlayerName) {
 				
 				$p->kick ( "Take a break!" );
 			}
