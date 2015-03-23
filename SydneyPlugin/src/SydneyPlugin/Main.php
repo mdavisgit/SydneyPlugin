@@ -61,12 +61,13 @@ class Main extends PluginBase implements Listener {
 				// $e->getPlayer()->sendMessage("poop head");
 				
 				$this->messageToAll ( "Before foreach" );
-				$length = count ( $playersOnline );
+				$length = sizeof( $playersOnline );
 				$this->messageToAll ( "Length: " . $length );
 				
-				for($i = 0; $i < $length; $i ++) {
-					$this->messageToAll ( "i: " . $i );
-					$this->messageToAll ( "Index: " . $i . " is " . $playersOnline [$i] );
+				foreach ($playersOnline as &$i) {
+//				for($i = 0; $i < $length; $i ++) {
+					$this->messageToAll ( "Element Value: " . $i );
+//					$this->messageToAll ( "Index: " . $i . " is " . $playersOnline [$i] );
 				}
 				// foreach($playersOnline as $x => $x_value) {
 				// $this->testmessage($x. " " . $x_value);
@@ -99,9 +100,8 @@ class Main extends PluginBase implements Listener {
 		
 		$this->messageToAll ( "Before setting array" );
 		
-		// $playersOnline = array($name=>time());
 		
-		if (empty ( $playersOnline )) {
+/**		if (empty ( $playersOnline )) {
 			$playersOnline [0] = $name . "~" . time ();
 			$this->messageToAll ( "Added entry to first element: " . $playersOnline [0] );
 		} else {
@@ -110,21 +110,24 @@ class Main extends PluginBase implements Listener {
 			$this->messageToAll ( "Count : " . count ( $playersOnline ) );
 			$this->messageToAll ( "Name: " . $name );
 			
-			// $playersOnline[$length] = $name;
 			$playersOnline [$length] = $name . "~" . time ();
 		}
+*/
+				
+		$length = sizeof( $playersOnline );
+		$this->messageToAll ( "Length before: " . $length);
+		$playersOnline [$length] = $name . "~" . time ();
+		$this->messageToAll ( "Length after: " . $length);
 		
-		// $data[$name]->sendChat("Please do not ask for OP");
-		
-		// $this->api->ban->kick($player,"Do not swear!");
-		
-		// $p = $PJE->getPlayer();
-		// $p->sendMessage("Kicked - you is a poop");
-		// $p->kick("You is a poop");
-		
-		// array_push($playersOnline, $name=>time());
+
 	}
 	public function playerQuit(PlayerQuitEvent $PQE) {
+		global $playersOnline;
+		$player = $PQE->getPlayer ();
+		$name = $player->getDisplayName ();
+		foreach (array_keys($playersOnline, $name) as $key) {
+			unset($playersOnline[$key]);
+		}
 	}
 	
 	/**
